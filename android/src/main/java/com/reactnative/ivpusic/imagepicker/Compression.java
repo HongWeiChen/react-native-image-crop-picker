@@ -40,17 +40,24 @@ class Compression {
         int rotationAngleInDegrees = getRotationInDegreesForOrientationTag(originalOrientation);
         rotationMatrix.postRotate(rotationAngleInDegrees);
 
-        float ratioBitmap = (float) width / (float) height;
-        float ratioMax = (float) maxWidth / (float) maxHeight;
+        int finalWidth = 0;
+        int finalHeight = 0;
 
-        int finalWidth = maxWidth;
-        int finalHeight = maxHeight;
-
-        if (ratioMax > 1) {
-            finalWidth = (int) ((float) maxHeight * ratioBitmap);
-        } else {
-            finalHeight = (int) ((float) maxWidth / ratioBitmap);
+        System.out.print(" maxWidth ==== " + maxWidth);
+        System.out.print(" maxHeight ==== " + maxHeight);
+        if (width > maxWidth &&  height > maxHeight) {
+            float widthRatio = (float) maxWidth / (float) width;
+            float heightRatio = (float) maxHeight / (float) height;
+            float resizeRatio = Math.max(widthRatio, heightRatio);
+            finalWidth = (int) (resizeRatio * width);
+            finalHeight = (int) (resizeRatio * height);
+            System.out.print("finalWidth ====  " + finalWidth);
+            System.out.print("finalHeight ====  " + finalHeight);
+        } else  {
+            finalWidth = width;
+            finalHeight = height;
         }
+
 
         Bitmap resized = Bitmap.createScaledBitmap(original, finalWidth, finalHeight, true);
         resized = Bitmap.createBitmap(resized, 0, 0, finalWidth, finalHeight, rotationMatrix, true);
@@ -100,10 +107,12 @@ class Compression {
         List knownMimes = Arrays.asList("image/jpeg", "image/jpg", "image/png", "image/gif", "image/tiff");
         boolean isKnownMimeType = (bitmapOptions.outMimeType != null && knownMimes.contains(bitmapOptions.outMimeType.toLowerCase()));
 
-        if (isLossLess && useOriginalWidth && useOriginalHeight && isKnownMimeType) {
+        if (isLossLess && useOriginalWidth && useOriginalHeight && isKnownMimeType ) {
             Log.d("image-crop-picker", "Skipping image compression");
             return new File(originalImagePath);
         }
+
+        
 
         Log.d("image-crop-picker", "Image compression activated");
 
@@ -113,15 +122,17 @@ class Compression {
 
         if (maxWidth == null) {
             maxWidth = bitmapOptions.outWidth;
-        } else {
-            maxWidth = Math.min(maxWidth, bitmapOptions.outWidth);
         }
+//        else {
+//            maxWidth = Math.min(maxWidth, bitmapOptions.outWidth);
+//        }
 
         if (maxHeight == null) {
             maxHeight = bitmapOptions.outHeight;
-        } else {
-            maxHeight = Math.min(maxHeight, bitmapOptions.outHeight);
         }
+//        else {
+//            maxHeight = Math.min(maxHeight, bitmapOptions.outHeight);
+//        }
 
         return resize(originalImagePath, maxWidth, maxHeight, targetQuality);
     }

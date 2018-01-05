@@ -642,7 +642,7 @@ RCT_EXPORT_METHOD(openCropper:(NSDictionary *)options
                                  Boolean isKnownMimeType = [mimeType length] > 0;
 
                                  ImageResult *imageResult = [[ImageResult alloc] init];
-                                 if (isLossless && useOriginalWidth && useOriginalHeight && isKnownMimeType && !forceJpg) {
+                                if ((isLossless && useOriginalWidth && useOriginalHeight && isKnownMimeType && !forceJpg) || [mimeType isEqualToString:@"image/gif"]) {
                                      // Use original, unmodified image
                                      imageResult.data = imageData;
                                      imageResult.width = @(imgT.size.width);
