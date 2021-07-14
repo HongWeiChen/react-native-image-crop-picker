@@ -111,8 +111,10 @@ class Compression {
             Log.d("image-crop-picker", "Skipping image compression");
             return new File(originalImagePath);
         }
-
-        
+        if (bitmapOptions.outMimeType.equals("image/gif")) {
+            Log.d("image-crop-picker", "Skipping image compression");
+            return new File(originalImagePath);
+        }
 
         Log.d("image-crop-picker", "Image compression activated");
 
